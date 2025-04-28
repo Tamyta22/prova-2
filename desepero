@@ -1,0 +1,132 @@
+EXEMPLO DE TESTE ANOVA 
+
+# Instalar e carregar pacotes necessários
+if (!require(MASS)) install.packages("MASS")
+if (!require(ggplot2)) install.packages("ggplot2")
+library(MASS)
+library(ggplot2)
+
+# Carregar os dados
+data(epil)
+
+# Transformar 'period' e 'trt' em fatores
+epil$period <- factor(epil$period)
+epil$trt <- factor(epil$trt)
+
+# ANOVA de duas vias com interação
+anova <- aov(y ~ trt * period, data = epil)
+
+# Ver resultados da ANOVA
+summary(anova)
+
+# Gráfico de interação
+interaction.plot(epil$period, epil$trt, epil$y,
+                 main = "Interação entre Tratamento e Período",
+                 xlab = "Período",
+                 ylab = "Número médio de convulsões",
+                 trace.label = "Tratamento")
+
+# Boxplot
+ggplot(epil, aes(x = period, y = y, fill = trt)) +
+  geom_boxplot(position = position_dodge(0.8)) +
+  labs(title = "Número de Convulsões por Tratamento e Período",
+       x = "Período", y = "Número de Convulsões") +
+  theme_minimal()
+
+
+# -------------------
+# TESTE POST-HOC TUKEY
+# -------------------
+
+# Tukey para comparar níveis de tratamento dentro de cada período
+tukey_result <- TukeyHSD(anova_model)
+
+# Exibir resultado do Tukey
+print(tukey_result)
+
+# (Opcional) Plotar resultado do Tukey
+plot(tukey_result)
+
+PULAR
+
+# Instalar e carregar pacotes necessários
+if (!require(MASS)) install.packages("MASS")
+library(MASS)
+
+
+# Carregar os dados
+data(epil)
+
+# Transformar 'period' e 'trt' em fatores (caso ainda não sejam)
+epil$period <- factor(epil$period)
+epil$trt <- factor(epil$trt)
+
+# ANOVA de duas vias com interação
+anova <- aov(y ~ trt * period, data = epil)
+
+# Ver resultados
+summary(anova)
+
+# Verificar médias com interaction plot
+interaction.plot(epil$period, epil$trt, epil$y,
+                 main = "Interação entre Tratamento e Período",
+                 xlab = "Período",
+                 ylab = "Número médio de convulsões",
+                 trace.label = "Tratamento")
+
+# Boxplot para visualizar melhor
+library(ggplot2)
+ggplot(epil, aes(x = period, y = y, fill = trt)) +
+  geom_boxplot(position = position_dodge(0.8)) +
+  labs(title = "Número de Convulsões por Tratamento e Período",
+       x = "Período", y = "Número de Convulsões") +
+  theme_minimal()
+
+TUKEY
+
+# Tukey para comparar níveis de tratamento dentro de cada período
+tukey_result <- TukeyHSD(anova_model)
+
+# Exibir resultado do Tukey
+print(tukey_result)
+
+# (Opcional) Plotar resultado do Tukey
+plot(tukey_result)
+
+
+
+# Transformar o resultado do Tukey em data frame
+tukey_df <- as.data.frame(tukey_tratamento$trt)
+
+# Adicionar uma coluna com os nomes das comparações
+tukey_df$comparacao <- rownames(tukey_df)
+
+# Verificar como ficou
+print(tukey_df)
+
+# Plotar usando ggplot2
+library(ggplot2)
+
+ggplot(tukey_df, aes(x = comparacao, y = diff)) +
+  geom_point(size = 4, color = "darkblue") +  # Pontinho no meio da diferença
+  geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.2) +  # Barras de erro
+  geom_hline(yintercept = 0, linetype = "dashed", color = "darkred") +  # Linha zero (sem diferença)
+  labs(title = "Resultado do Teste de Tukey - Comparação entre Tratamentos",
+       x = "Comparação",
+       y = "Diferença média") +
+  theme_minimal()
+
+
+Diagrama de dispersão com reta de regressão (IMPORTANTE)
+
+ggplot(Pima.te, aes(x = bmi, y = glu)) +
+geom_point() +
+geom_smooth(method = "lm", se = TRUE, col = "blue") +
+labs(title = "Glicose vs IMC",
+x = "Índice de Massa Corporal (IMC)",
+y = "Glicose (glu)")
+## `geom_smooth()` using formula = 'y ~ x'
+7
+Modelo de regressão linear simples
+modelo_reg <- lm(glu ~ bmi, data = Pima.te)
+summary(modelo_reg)
